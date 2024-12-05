@@ -24,6 +24,10 @@ else:
     df.dropna(subset=['rating'], inplace=True)
 
 
+
+    # Remove leading commas in country column
+    df['country'] = df['country'].str.lstrip(',')
+    
     # Drop duration column 
     df.drop('duration', axis=1, inplace=True)
 
