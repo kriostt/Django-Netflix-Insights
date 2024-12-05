@@ -9,9 +9,9 @@ class NetflixShow(models.Model):
     cast = models.CharField(max_length=500, null=True, blank=True)  # Cast, can be empty
     country = models.CharField(max_length=200, null=True, blank=True)  # Country, can be empty
     date_added = models.DateField(null=True, blank=True)  # Date when the show was added to Netflix
+    year_added = models.IntegerField(null=True, blank=True)  # Year when the show was added to Netflix 
     release_year = models.IntegerField()  # Year of release
     rating = models.CharField(max_length=50)  # Rating (e.g., PG, R)
-    duration = models.CharField(max_length=50, null=True, blank=True)  # Duration (only for movies)
     listed_in = models.CharField(max_length=200)  # Genre or categories
     description = models.TextField(null=True, blank=True)  # Description of the show
 
