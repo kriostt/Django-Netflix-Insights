@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import os
+import re
 
 # Check if the cleaned data already exists
 if os.path.exists('cleaned_netflix_titles.csv'):
@@ -20,14 +21,18 @@ else:
     # Set the filtered rows' rating column to NaN
     df.loc[rating_filter, 'rating'] = np.nan
 
-    # Drop rows with missing values in the 'rating' column
-    df.dropna(subset=['rating'], inplace=True)
-
-
-
     # Remove leading commas in country column
     df['country'] = df['country'].str.lstrip(',')
-    
+
+    # Extract the year from the `date_added` column using regex
+    df['year_added'] = df['date_added'].str.extract(r'(\d{4})', expand=False)
+
+    # Convert `year_added` to numeric, then to integer after filling NaN values
+    df['year_added'] = pd.to_numeric(df['year_added'], errors='coerce').fillna(0).astype(int)
+
+    # Convert 'release_year' to numeric for analysis
+    df['release_year'] = pd.to_numeric(df['release_year'], errors='coerce').fillna(0).astype(int)
+
     # Drop duration column 
     df.drop('duration', axis=1, inplace=True)
 
@@ -63,12 +68,20 @@ axs[0].set_ylabel('Frequency', fontsize=10)
 axs[0].tick_params(axis='x', rotation=45)
 
 # Second subplot - Line plot for the trend of additions over the years
-df['release_year'] = pd.to_numeric(df['release_year'], errors='coerce')
-df.dropna(subset=['release_year'], inplace=True)
-yearly_additions = df.groupby('release_year').size()
-yearly_additions.plot(kind='line', title='Trend of Additions Over Years', ax=axs[1])
+# Filter out rows where `year_added` is NaN or invalid
+valid_years = df['year_added'].notna() & (df['year_added'] > 0)  # Keep only valid years
+yearly_additions = df[valid_years].groupby('year_added').size()
+# Plot the trend of additions over years
+yearly_additions.plot(kind='line', marker='o', title='Trend of Additions Over Years', ax=axs[1])
+# Set x-axis limits to avoid starting from 0 (only valid years)
+axs[1].set_xlim(yearly_additions.index.min(), yearly_additions.index.max())
+# Customize x-axis labels and ticks
 axs[1].set_xlabel('Year')
 axs[1].set_ylabel('Number of Titles Added')
+axs[1].set_xticks(yearly_additions.index) 
+axs[1].tick_params(axis='x', rotation=45)
+
+
 
 # Third subplot - Scatter plot between rating and release year (as an example)
 df['release_year'] = pd.to_numeric(df['release_year'], errors='coerce')
@@ -77,14 +90,6 @@ axs[2].scatter(df['release_year'], df['rating'], alpha=0.5, color=plt.cm.Paired.
 axs[2].set_xlabel('Release Year')
 axs[2].set_ylabel('Rating', fontsize=10)
 axs[2].set_title('Rating vs. Release Year')
-
-# Option 2
-# # Third subplot - Horizontal bar chart for the top 5 ratings
-# ratings_count = df['rating'].value_counts()
-# ratings_count_head = ratings_count.head(5)
-# ratings_count_head.plot(kind='barh', color=plt.cm.Paired.colors[:5], title='Content Distribution by Ratings', ax=axs[2])
-# axs[2].set_xlabel('Frequency')
-# axs[2].set_ylabel('Ratings')
 
 # Adjust layout for better spacing
 plt.tight_layout()
