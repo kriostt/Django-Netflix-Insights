@@ -13,27 +13,30 @@ else:
     # Load the raw dataset
     df = pd.read_csv('netflix_titles.csv')
 
-    # Move values of rating column resembling duration
-    # Filter rows in rating column containing "[digits] min"
-    rating_filter = df['rating'].str.contains(r'\d+\s*min', na=False)
-    # Set the duration column to have the values from the rating column
-    df.loc[rating_filter, 'duration'] = df.loc[rating_filter, 'rating']
-    # Set the filtered rows' rating column to NaN
-    df.loc[rating_filter, 'rating'] = np.nan
-
     # Remove leading commas in country column
     df['country'] = df['country'].str.lstrip(',')
 
-    # Extract the year from the `date_added` column using regex
+    # Drop rows with missing values in the 'date_added' column
+    df.dropna(subset=['date_added'], inplace=True)
+    # Extract the year from the 'date_added' column using regex
     df['year_added'] = df['date_added'].str.extract(r'(\d{4})', expand=False)
-
-    # Convert `year_added` to numeric, then to integer after filling NaN values
+    # Convert 'year_added' to numeric, then to integer after filling NaN values
     df['year_added'] = pd.to_numeric(df['year_added'], errors='coerce').fillna(0).astype(int)
 
     # Convert 'release_year' to numeric for analysis
     df['release_year'] = pd.to_numeric(df['release_year'], errors='coerce').fillna(0).astype(int)
 
-    # Drop duration column 
+    # Move values of 'rating' column resembling duration
+    # Filter rows in 'rating' column containing "[digits] min"
+    rating_filter = df['rating'].str.contains(r'\d+\s*min', na=False)
+    # Set the 'duration' column to have the values from the rating column
+    df.loc[rating_filter, 'duration'] = df.loc[rating_filter, 'rating']
+    # Set the filtered rows' 'rating' column to NaN
+    df.loc[rating_filter, 'rating'] = np.nan
+    # Drop rows with missing values in the 'rating' column
+    df.dropna(subset=['rating'], inplace=True)
+
+    # Drop 'duration' column 
     df.drop('duration', axis=1, inplace=True)
 
     # Fill missing values with 'Unknown'
