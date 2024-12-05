@@ -12,6 +12,9 @@ for index, row in df.iterrows():
     # If 'date_added' is a valid date, assign it; otherwise, leave as None
     if pd.isna(date_added):
         date_added = None
+    
+    # Handle the 'year_added' column: Get the year from the 'year_added' column
+    year_added = row['year_added'] if 'year_added' in row else None
 
     # Check if the show_id already exists to avoid duplicates
     if not NetflixShow.objects.filter(show_id=row['show_id']).exists():
@@ -24,9 +27,9 @@ for index, row in df.iterrows():
             cast=row['cast'] if 'cast' in row else None,  # Cast, can be empty
             country=row['country'] if 'country' in row else None,  # Country, can be empty
             date_added=date_added,  # Only valid dates will be assigned here
+            year_added=year_added, 
             release_year=row['release_year'],  # Year of release
             rating=row['rating'],  # Rating (e.g., PG, R)
-            duration=row['duration'] if 'duration' in row else None,  # Duration (only for movies)
             listed_in=row['listed_in'],  # Genre or categories
             description=row['description'] if 'description' in row else None  # Description of the show
         )
