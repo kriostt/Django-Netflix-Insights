@@ -13,12 +13,12 @@ else:
     df = pd.read_csv('netflix_titles.csv')
 
     # Move values of rating column resembling duration
-    # Find the rows containing wrong values 
-    filtered_rating = df['rating'].str.contains(r'\d+\s*min', na=False)
+    # Filter rows in rating column containing "[digits] min"
+    rating_filter = df['rating'].str.contains(r'\d+\s*min', na=False)
     # Set the duration column to have the values from the rating column
-    df.loc[filtered_rating, 'duration'] = df.loc[filtered_rating, 'rating']
+    df.loc[rating_filter, 'duration'] = df.loc[rating_filter, 'rating']
     # Set the filtered rows' rating column to NaN
-    df.loc[filtered_rating, 'rating'] = np.nan
+    df.loc[rating_filter, 'rating'] = np.nan
 
     # Drop rows with missing values in the 'rating' column
     df.dropna(subset=['rating'], inplace=True)
