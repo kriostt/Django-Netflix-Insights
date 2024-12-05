@@ -23,6 +23,10 @@ else:
     # Drop rows with missing values in the 'rating' column
     df.dropna(subset=['rating'], inplace=True)
 
+
+    # Drop duration column 
+    df.drop('duration', axis=1, inplace=True)
+
     # Fill missing values with 'Unknown'
     df.fillna('Unknown', inplace=True)
 
