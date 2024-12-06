@@ -83,8 +83,9 @@ axs[1].tick_params(axis='x', rotation=45)
 # axs[2].set_title('Rating vs. Release Year')
 
 # Third subplot - Line plot for the trend of additions over the years
-# Group by 'year_added' and count the number of titles added each year
-yearly_additions = df.groupby('year_added').size()
+# Filter out rows where year_added is NaN or invalid
+valid_years = df['year_added'].notna() & (df['year_added'] > 0)
+yearly_additions = df[valid_years].groupby('year_added').size()
 # Plot the trend of additions over years
 axs[2].plot(yearly_additions.index, yearly_additions.values, marker='o')
 # Set x-axis limits to avoid starting from 0 (only valid years)
