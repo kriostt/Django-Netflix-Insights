@@ -2,7 +2,7 @@ import pandas as pd
 from movies_and_shows.models import NetflixShow
 
 # Load the cleaned dataset
-df = pd.read_csv('/Users/alessandrahenriz/Desktop/Django-Netflix-Insights/cleaned_netflix_titles.csv')
+df = pd.read_csv("C:/Users/krisa/Desktop/CPRO 2201/Django-Netflix-Insights/cleaned_netflix_titles.csv")
 
 # Loop through each row and insert data into the database
 for index, row in df.iterrows():
