@@ -80,14 +80,14 @@ axs[2].set_title('Rating vs. Release Year')
 valid_years = df['year_added'].notna() & (df['year_added'] > 0)  # Keep only valid years
 yearly_additions = df[valid_years].groupby('year_added').size()
 # Plot the trend of additions over years
-yearly_additions.plot(kind='line', marker='o', title='Trend of Additions Over Years', ax=axs[1])
+yearly_additions.plot(kind='line', marker='o', title='Trend of Additions Over Years', ax=axs[2])
 # Set x-axis limits to avoid starting from 0 (only valid years)
-axs[1].set_xlim(yearly_additions.index.min(), yearly_additions.index.max())
+axs[2].set_xlim(yearly_additions.index.min(), yearly_additions.index.max())
 # Customize x-axis labels and ticks
-axs[1].set_xlabel('Year')
-axs[1].set_ylabel('Number of Titles Added')
-axs[1].set_xticks(yearly_additions.index) 
-axs[1].tick_params(axis='x', rotation=45)
+axs[2].set_xlabel('Year')
+axs[2].set_ylabel('Number of Titles Added')
+axs[2].set_xticks(yearly_additions.index) 
+axs[2].tick_params(axis='x', rotation=45)
 
 # Adjust layout for better spacing
 plt.tight_layout()
