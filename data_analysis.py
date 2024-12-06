@@ -71,7 +71,7 @@ axs[1].bar(rating_counts.index, rating_counts.values, color=plt.cm.Paired.colors
 # Customize title, axis labels, x-tick rotation
 axs[1].set_title('Content Distribution by Ratings', fontsize=12)
 axs[1].set_xlabel('Ratings', fontsize=10)
-axs[1].set_ylabel('Frequency', fontsize=10)
+axs[1].set_ylabel('Number of Titles', fontsize=10)
 axs[1].tick_params(axis='x', rotation=45)
 
 # # Second subplot - Scatter plot between rating and release year (as an example)
