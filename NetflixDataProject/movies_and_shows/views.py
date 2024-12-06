@@ -151,5 +151,5 @@ def analysis_view(request):
         'selected_year': year_filter,
     }
 
-    # Render the 'analysis.html' with the context data
-    return render(request, 'analysis.html', context)
+    # Render the 'analysis_template.html' with the context data
+    return render(request, 'analysis_template.html', context)
