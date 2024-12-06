@@ -114,7 +114,7 @@ def analysis_view(request):
     if year_filter:
         titles = titles.filter(year_added=year_filter)
 
-    # Generate the plots using the filtered queryset
+    # Generate the plots using the filtered titles
     genre_plot = titles_per_genre_plot(titles)
     rating_plot = titles_per_rating_plot(titles)
     year_plot = titles_per_year_plot(titles)
@@ -125,7 +125,10 @@ def analysis_view(request):
     year_plot_data = plot_to_base64(year_plot)
 
     # Get unique values for dropdown filters (genres, ratings, years)
-    genres = titles.values_list('listed_in', flat=True).distinct()
+    # Retrieve list of genres from 'listed_in' column
+    genres = titles.values_list('listed_in', flat=True)
+    # Split genres separated by commas into individual genres
+    genres = [genre for sublist in genres for genre in sublist.split(', ')]
     ratings = titles.values_list('rating', flat=True).distinct()
     years = titles.values_list('year_added', flat=True).distinct()
 
