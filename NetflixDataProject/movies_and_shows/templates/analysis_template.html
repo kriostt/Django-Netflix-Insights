@@ -1,16 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Meta charset for character encoding -->
     <meta charset="UTF-8">
+    <!-- Meta viewport tag for responsive design -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Title of the page -->
     <title>Netflix Data Analysis</title>
     <style>
+        /* Style for the body of the page */
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
             padding: 20px;
             background-color: #E5E4E2;
         }
+        /* Style for the main heading */
         h1 {
             text-align: center;
             font-size: 3em;
@@ -19,15 +24,18 @@
             text-shadow: 2px 2px black;
         }
 
+         /* Style for filter section */
         .filters {
             margin-bottom: 30px;
             text-align: center;
         }
+        /* Style for filter labels */
         .filters label {
             display: inline-block;
             width: 150px;
             text-align: right;
         }
+        /* Style for dropdown selects */
         .filters select {
             padding: 10px;
             margin: 10px;
@@ -36,6 +44,7 @@
             border-radius: 5px;
             border: 1px solid #A52A2A;
         }
+        /* Style for filter buttons */
         .filters button {
             padding: 10px 15px;
             font-size: 16px;
@@ -46,24 +55,29 @@
             cursor: pointer;
             margin-top: 20px;
         }
+        /* Style for hover effect on filter button */
         .filters button:hover {
             background-color: #831010;
         }
+         /* Style for the "Clear Filters" button */
         .filters a button {
             border: 1px solid black;
             background-color: darkgray;
             margin-left: 15px;
         }
+         /* Hover effect for "Clear Filters" button */
         .filters a button:hover {
             background-color: gray;
         }
 
+        /* Style for the container of the plots */
         .plot-container {
             display: grid;
             /* Responsive grid */
             grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); 
             gap: 20px;
         }
+        /* Style for each individual plot container */
         .plot-container div {
             text-align: center;
             border: 1px solid #A52A2A;
@@ -72,46 +86,55 @@
             background-color: white;
             box-shadow: 10px 10px darkgray;
         }
+        /* Style for images inside the plot containers */
         .plot-container img {
             width: 100%;
         }
     </style>
 </head>
 <body>
-
+    <!-- Main heading of the page -->
     <h1>Netflix Data Analysis</h1>
 
-    <!-- Filters -->
+    <!-- Filters section -->
     <div class="filters">
+        <!-- Form to submit the filter options -->
         <form method="get">
+            <!-- Label and dropdown for genre filter -->
             <label for="genre">Filter by Genre:</label>
             <select name="genre" id="genre">
                 <option value="">--Select Genre--</option>
                 {% for genre in genres %}
+                    <!-- Option for each genre, with selected genre pre-selected if applicable -->
                     <option value="{{ genre }}" {% if genre == selected_genre %}selected{% endif %}>{{ genre }}</option>
                 {% endfor %}
             </select>
 
             <br>
 
+            <!-- Label and dropdown for rating filter -->
             <label for="rating">Filter by Rating:</label>
             <select name="rating" id="rating">
                 <option value="">--Select Rating--</option>
                 {% for rating in ratings %}
+                    <!-- Option for each rating, with selected rating pre-selected if applicable -->
                     <option value="{{ rating }}" {% if rating == selected_rating %}selected{% endif %}>{{ rating }}</option>
                 {% endfor %}
             </select>
 
             <br>
 
+            <!-- Label and dropdown for year filter -->
             <label for="year">Filter by Year:</label>
             <select name="year" id="year">
                 <option value="">--Select Year--</option>
                 {% for year in years %}
+                    <!-- Option for each year, with selected year pre-selected if applicable -->
                     <option value="{{ year }}" {% if year == selected_year %}selected{% endif %}>{{ year }}</option>
                 {% endfor %}
             </select>
 
+            <!-- Submit and clear buttons -->
             <div>
                 <button type="submit">Apply Filters</button>
                 <a href="/">
@@ -121,19 +144,19 @@
         </form>
     </div>
 
-    <!-- Plots -->
+    <!-- Plots display section -->
     <div class="plot-container">
-        <!-- Genre Plot -->
+        <!-- Plot for genre distribution -->
         <div>
             <img src="data:image/png;base64,{{ genre_plot }}" alt="Most Common Genres on Netflix">
         </div>
 
-        <!-- Rating Plot -->
+        <!-- Plot for rating distribution -->
         <div>
             <img src="data:image/png;base64,{{ rating_plot }}" alt="Content Distribution by Ratings">
         </div>
 
-        <!-- Year Plot -->
+        <!-- Plot for yearly trends -->
         <div>
             <img src="data:image/png;base64,{{ year_plot }}" alt="Trend of Additions Over Years">
         </div>
