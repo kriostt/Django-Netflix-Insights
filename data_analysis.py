@@ -67,13 +67,24 @@ axs[0].set_xlabel('Genres', fontsize=10)
 axs[0].set_ylabel('Frequency', fontsize=10)
 axs[0].tick_params(axis='x', rotation=45)
 
-# Second subplot - Scatter plot between rating and release year (as an example)
-df['release_year'] = pd.to_numeric(df['release_year'], errors='coerce')
-df.dropna(subset=['release_year'], inplace=True)
-axs[2].scatter(df['release_year'], df['rating'], alpha=0.5, color=plt.cm.Paired.colors[3])
-axs[2].set_xlabel('Release Year')
-axs[2].set_ylabel('Rating', fontsize=10)
-axs[2].set_title('Rating vs. Release Year')
+# Second subplot - Bar chart for the content distribution by ratings
+# Count the frequency of each rating
+rating_counts = df['rating'].value_counts()  
+# Plot the bar chart
+axs[1].bar(rating_counts.index, rating_counts.values, color=plt.cm.Paired.colors[:len(rating_counts)])
+# Customize title, axis labels, x-tick rotation
+axs[1].set_title('Content Distribution by Ratings', fontsize=12)
+axs[1].set_xlabel('Ratings', fontsize=10)
+axs[1].set_ylabel('Frequency', fontsize=10)
+axs[1].tick_params(axis='x', rotation=45)
+
+# # Second subplot - Scatter plot between rating and release year (as an example)
+# df['release_year'] = pd.to_numeric(df['release_year'], errors='coerce')
+# df.dropna(subset=['release_year'], inplace=True)
+# axs[2].scatter(df['release_year'], df['rating'], alpha=0.5, color=plt.cm.Paired.colors[3])
+# axs[2].set_xlabel('Release Year')
+# axs[2].set_ylabel('Rating', fontsize=10)
+# axs[2].set_title('Rating vs. Release Year')
 
 # Third subplot - Line plot for the trend of additions over the years
 # Filter out rows where `year_added` is NaN or invalid
