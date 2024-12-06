@@ -14,12 +14,12 @@ def titles_per_genre_plot(titles):
     # Count the frequency of each genre
     genre_counts = pd.Series(genres).value_counts()
 
-    # Create a plot for the top 5 most common genres
+    # Create a plot for the most common genres
     fig, ax = plt.subplots()
     ax.bar(genre_counts.head(5).index, genre_counts.head(5).values, color=plt.cm.Paired.colors[:5])
 
     # Customize title, axis labels, x-tick rotation
-    ax.set_title('Top 5 Most Common Genres on Netflix', fontsize=12)
+    ax.set_title('Most Common Genres on Netflix', fontsize=12)
     ax.set_xlabel('Genres', fontsize=10)
     ax.set_ylabel('Frequency', fontsize=10)
     ax.tick_params(axis='x', rotation=25)
