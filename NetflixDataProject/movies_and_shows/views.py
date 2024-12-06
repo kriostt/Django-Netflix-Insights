@@ -3,13 +3,16 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import io
 import base64
+from movies_and_shows.models import NetflixShow
 
 # Function to generate plot for the most common genres
-def titles_per_genre_plot(df):
-    # Split the 'listed_in' column by commas and explode into rows
-    genres = df['listed_in'].str.split(', ').explode()
+def titles_per_genre_plot(titles):
+    # Retrieve list of genres from 'listed_in' column
+    genres = titles.values_list('listed_in', flat=True)
+    # Split genres separated by commas into individual genres
+    genres = [genre for sublist in genres for genre in sublist.split(', ')]
     # Count the frequency of each genre
-    genre_counts = genres.value_counts()
+    genre_counts = pd.Series(genres).value_counts()
 
     # Create a plot for the top 5 most common genres
     fig, ax = plt.subplots()
@@ -21,16 +24,18 @@ def titles_per_genre_plot(df):
     ax.set_ylabel('Frequency', fontsize=10)
     ax.tick_params(axis='x', rotation=25)
 
-    # Adjust layout for better spacing
+    # Use tight layout to avoid overlapping
     plt.tight_layout()
 
     # Return the plot figure
     return fig
 
 # Function to generate plot for the content distribution by ratings
-def titles_per_rating_plot(df):
+def titles_per_rating_plot(titles):
+    # Retrieve list of ratings from 'rating' column
+    ratings = titles.values_list('rating', flat=True)
     # Count the frequency of each rating
-    rating_counts = df['rating'].value_counts()  
+    rating_counts = pd.Series(ratings).value_counts()  
 
     # Create a plot for the content distribution by ratings
     fig, ax = plt.subplots()
@@ -42,17 +47,23 @@ def titles_per_rating_plot(df):
     ax.set_ylabel('Number of Titles', fontsize=10)
     ax.tick_params(axis='x', rotation=25)
 
-    # Adjust layout for better spacing
+    # Use tight layout to avoid overlapping
     plt.tight_layout()
 
     # Return the plot figure
     return fig
 
 # Function to generate plot for trend of additions over the years
-def titles_per_year_plot(df):
+def titles_per_year_plot(titles):
+    # Retrieve list of years from 'year_added' column
+    years = titles.values_list('year_added', flat=True)
     # Filter out rows where year_added is NaN or invalid
-    valid_years = df['year_added'].notna() & (df['year_added'] > 0)
-    yearly_additions = df[valid_years].groupby('year_added').size()
+    # Remove NaN values from list
+    valid_years = pd.Series(years).dropna() 
+    # Remove invalid year valiues
+    valid_years = valid_years[valid_years > 0]
+    # Count the frequency of additions by year
+    yearly_additions = valid_years.value_counts().sort_index()
 
     # Create a plot for the trend of additions over the years
     fig, ax = plt.subplots()
@@ -68,7 +79,7 @@ def titles_per_year_plot(df):
     ax.set_xticks(yearly_additions.index) 
     ax.tick_params(axis='x', rotation=25)
 
-    # Adjust layout for better spacing
+    # Use tight layout to avoid overlapping
     plt.tight_layout()
 
     # Return the plot figure
@@ -82,34 +93,31 @@ def plot_to_base64(fig):
     fig.savefig(img, format='png')
     # Rewind the byte stream to the beginning
     img.seek(0)
-    # Return converted byte data to base64 
+    # Return base64 string of image 
     return base64.b64encode(img.getvalue()).decode('utf-8')
 
 # Main view function to handle the analysis page request with filters
 def analysis_view(request):
-    # Load the cleaned Netflix dataset
-    df = pd.read_csv("C:/Users/krisa/Desktop/CPRO 2201/Django-Netflix-Insights/cleaned_netflix_titles.csv")
+    # Retrieve all Netflix titles from database
+    titles = NetflixShow.objects.all()
 
-    # Get the filter parameters from the request (use default None if not provided)
+    # Get filter parameters from request
     genre_filter = request.GET.get('genre', None)
     rating_filter = request.GET.get('rating', None)
     year_filter = request.GET.get('year', None)
 
-    # Apply filters to dataframe if filter values are provided
-    # Filter by genre
+    # Apply filters to titles if filters are provided
     if genre_filter:
-        df = df[df['listed_in'].str.contains(genre_filter, case=False, na=False)]
-    # Filter by rating
+        titles = titles.filter(listed_in__icontains=genre_filter)
     if rating_filter:
-        df = df[df['rating'] == rating_filter]
-    # Filter by year added
+        titles = titles.filter(rating=rating_filter)
     if year_filter:
-        df = df[df['year_added'] == int(year_filter)]
+        titles = titles.filter(year_added=year_filter)
 
-    # Generate the plots using the filtered data
-    genre_plot = titles_per_genre_plot(df)
-    rating_plot = titles_per_rating_plot(df)
-    year_plot = titles_per_year_plot(df)
+    # Generate the plots using the filtered queryset
+    genre_plot = titles_per_genre_plot(titles)
+    rating_plot = titles_per_rating_plot(titles)
+    year_plot = titles_per_year_plot(titles)
 
     # Convert the plots to base64 images for embedding in template
     genre_plot_data = plot_to_base64(genre_plot)
@@ -117,22 +125,22 @@ def analysis_view(request):
     year_plot_data = plot_to_base64(year_plot)
 
     # Get unique values for dropdown filters (genres, ratings, years)
-    genres = df['listed_in'].str.split(', ').explode().unique()  # Unique genres from 'listed_in'
-    ratings = df['rating'].unique()  # Unique ratings
-    years = df['year_added'].unique()  # Unique years added
+    genres = titles.values_list('listed_in', flat=True).distinct()
+    ratings = titles.values_list('rating', flat=True).distinct()
+    years = titles.values_list('year_added', flat=True).distinct()
 
     # Prepare context data to pass to the template
     context = {
-        'genre_plot': genre_plot_data,  # Plot for top genres
-        'rating_plot': rating_plot_data,  # Plot for content distribution by ratings
-        'trend_plot': year_plot_data,  # Plot for trend of additions over years
-        'genres': genres,  # Dropdown options for genres
-        'ratings': ratings,  # Dropdown options for ratings
-        'years': sorted(years),  # Dropdown options for years (sorted)
-        'selected_genre': genre_filter,  # Currently selected genre filter
-        'selected_rating': rating_filter,  # Currently selected rating filter
-        'selected_year': year_filter,  # Currently selected year filter
+        'genre_plot': genre_plot_data,
+        'rating_plot': rating_plot_data,
+        'year_plot': year_plot_data,
+        'genres': genres,
+        'ratings': ratings,
+        'years': sorted(years),
+        'selected_genre': genre_filter,
+        'selected_rating': rating_filter,
+        'selected_year': year_filter,
     }
 
-    # Render the 'analysis_template.html' with the context data
+    # Render the 'analysis.html' with the context data
     return render(request, 'analysis.html', context)
