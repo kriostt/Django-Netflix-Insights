@@ -35,7 +35,7 @@ def titles_per_rating_plot(titles):
     # Retrieve list of ratings from 'rating' column
     ratings = titles.values_list('rating', flat=True)
     # Count the frequency of each rating
-    rating_counts = pd.Series(ratings).value_counts()  
+    rating_counts = pd.Series(ratings).value_counts()
 
     # Create a plot for the content distribution by ratings
     fig, ax = plt.subplots()
@@ -57,10 +57,9 @@ def titles_per_rating_plot(titles):
 def titles_per_year_plot(titles):
     # Retrieve list of years from 'year_added' column
     years = titles.values_list('year_added', flat=True)
-    # Filter out rows where year_added is NaN or invalid
-    # Remove NaN values from list
-    valid_years = pd.Series(years).dropna() 
-    # Remove invalid year valiues
+    # Convert list of years to pandas Series
+    valid_years = pd.Series(years)
+    # Remove invalid year valuues
     valid_years = valid_years[valid_years > 0]
     # Count the frequency of additions by year
     yearly_additions = valid_years.value_counts().sort_index()
