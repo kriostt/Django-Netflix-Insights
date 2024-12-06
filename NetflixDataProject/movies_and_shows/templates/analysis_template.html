@@ -5,36 +5,75 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Netflix Data Analysis</title>
     <style>
-        /* Add some basic styling for the page */
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
             padding: 20px;
+            background-color: #f5f5f1;
         }
         h1 {
             text-align: center;
-        }
-        .filters {
+            font-size: 3em;
             margin-bottom: 20px;
+            color: #831010;
+            text-shadow: 2px 2px black;
+        }
+
+        .filters {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .filters label {
+            display: inline-block;
+            width: 150px;
+            text-align: right;
         }
         .filters select {
             padding: 10px;
+            margin: 10px;
             font-size: 16px;
-            margin-right: 10px;
+            width: 180px;
+            border-radius: 5px;
+            border: 1px solid #A52A2A;
         }
-        .plot-container {
-            display: flex;
-            justify-content: space-between;  /* Align plots in one row */
-            gap: 20px;  /* Adds space between the plots */
+        .filters button {
+            padding: 10px 15px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid black;
+            background-color: #A52A2A;
+            color: white;
+            cursor: pointer;
             margin-top: 20px;
         }
+        .filters button:hover {
+            background-color: #831010;
+        }
+        .filters a button {
+            border: 1px solid black;
+            background-color: darkgray;
+            margin-left: 15px;
+        }
+        .filters a button:hover {
+            background-color: gray;
+        }
+
+        .plot-container {
+            display: grid;
+            /* Responsive grid */
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); 
+            gap: 20px;
+        }
         .plot-container div {
-            flex: 1;  /* Ensures each plot takes equal width */
             text-align: center;
+            border: 1px solid #A52A2A;
+            padding: 10px;
+            border-radius: 10px;
+            background-color: white;
+            box-shadow: 10px 10px lightgray;
         }
         .plot-container img {
-            width: 100%;  /* Ensures images take up full width of the div */
-            height: auto;
+            width: 100%;
         }
     </style>
 </head>
@@ -53,6 +92,8 @@
                 {% endfor %}
             </select>
 
+            <br>
+
             <label for="rating">Filter by Rating:</label>
             <select name="rating" id="rating">
                 <option value="">--Select Rating--</option>
@@ -60,6 +101,8 @@
                     <option value="{{ rating }}" {% if rating == selected_rating %}selected{% endif %}>{{ rating }}</option>
                 {% endfor %}
             </select>
+
+            <br>
 
             <label for="year">Filter by Year:</label>
             <select name="year" id="year">
@@ -69,10 +112,12 @@
                 {% endfor %}
             </select>
 
-            <button type="submit">Apply Filters</button>
-            <a href="/">
-                <button type="button">Clear Filters</button>
-            </a>
+            <div>
+                <button type="submit">Apply Filters</button>
+                <a href="/">
+                    <button type="button">Clear Filters</button>
+                </a>
+            </div>
         </form>
     </div>
 
