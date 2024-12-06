@@ -129,6 +129,8 @@ def analysis_view(request):
     genres = titles.values_list('listed_in', flat=True)
     # Split genres separated by commas into individual genres
     genres = [genre for sublist in genres for genre in sublist.split(', ')]
+    # Get unique genres using set to remove duplicates
+    unique_genres = list(set(genres))
     ratings = titles.values_list('rating', flat=True).distinct()
     years = titles.values_list('year_added', flat=True).distinct()
 
@@ -137,7 +139,7 @@ def analysis_view(request):
         'genre_plot': genre_plot_data,
         'rating_plot': rating_plot_data,
         'year_plot': year_plot_data,
-        'genres': genres,
+        'genres': unique_genres,
         'ratings': ratings,
         'years': sorted(years),
         'selected_genre': genre_filter,
