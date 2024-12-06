@@ -148,7 +148,7 @@ def analysis_view(request):
         'years': sorted(valid_years),
         'selected_genre': genre_filter,
         'selected_rating': rating_filter,
-        'selected_year': year_filter,
+        'selected_year': int(year_filter) if year_filter else None,
     }
 
     # Render the 'analysis_template.html' with the context data
