@@ -14,7 +14,8 @@ def titles_per_genre_plot(titles):
 
     # Create a plot for the most common genres
     fig, ax = plt.subplots()
-    ax.bar(genre_counts.head(5).index, genre_counts.head(5).values, color=plt.cm.Paired.colors[:5])
+    colors = ['#E50914', '#221F1F', '#B81D24', '#F5F5F1', '#757575']
+    ax.bar(genre_counts.head(5).index, genre_counts.head(5).values, color=colors)
 
     # Customize title, axis labels, x-tick rotation
     ax.set_title('Most Common Genres on Netflix', fontsize=12)
@@ -37,7 +38,8 @@ def titles_per_rating_plot(titles):
 
     # Create a plot for the content distribution by ratings
     fig, ax = plt.subplots()
-    ax.bar(rating_counts.index, rating_counts.values, color=plt.cm.Paired.colors[:len(rating_counts)])
+    colors = ['#E50914', '#221F1F', '#B81D24', '#F5F5F1', '#757575']
+    ax.bar(rating_counts.index, rating_counts.values, color=colors)
 
     # Customize title, axis labels, x-tick rotation
     ax.set_title('Content Distribution by Ratings', fontsize=12)
@@ -64,7 +66,7 @@ def titles_per_year_plot(titles):
 
     # Create a plot for the trend of additions over the years
     fig, ax = plt.subplots()
-    ax.plot(yearly_additions.index, yearly_additions.values, marker='o')
+    ax.plot(yearly_additions.index, yearly_additions.values, marker='o', color='#B81D24')
 
     # Set x-axis limits to avoid starting from 0 (only valid years)
     ax.set_xlim(yearly_additions.index.min(), yearly_additions.index.max())
