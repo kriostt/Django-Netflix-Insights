@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from movies_and_shows.models import NetflixShow
+from .models import NetflixShow
 from .plot import titles_per_genre_plot, titles_per_rating_plot, titles_per_year_plot, plot_to_base64
 
 # Main view function to handle the analysis page request with filters
