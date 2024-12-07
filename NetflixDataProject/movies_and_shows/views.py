@@ -26,9 +26,9 @@ def analysis_view(request):
     year_plot = titles_per_year_plot(titles)
 
     # Convert the plots to base64 images for embedding in template
-    genre_plot_data = plot_to_base64(genre_plot)
-    rating_plot_data = plot_to_base64(rating_plot)
-    year_plot_data = plot_to_base64(year_plot)
+    genre_plot_base64 = plot_to_base64(genre_plot)
+    rating_plot_base64 = plot_to_base64(rating_plot)
+    year_plot_base64 = plot_to_base64(year_plot)
 
     # Get unique values for dropdown filters (genres, ratings, years)
     # Retrieve list of genres from 'listed_in' column
@@ -46,9 +46,9 @@ def analysis_view(request):
 
     # Prepare context data to pass to the template
     context = {
-        'genre_plot': genre_plot_data,
-        'rating_plot': rating_plot_data,
-        'year_plot': year_plot_data,
+        'genre_plot': genre_plot_base64,
+        'rating_plot': rating_plot_base64,
+        'year_plot': year_plot_base64,
         'genres': sorted(unique_genres),
         'ratings': sorted(ratings),
         'years': sorted(valid_years),
